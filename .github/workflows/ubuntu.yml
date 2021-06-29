@@ -40,3 +40,7 @@ jobs:
           cd build
           ctest -V --timeout 600
 
+      - name: build plugin
+        run: |
+          chmod +x ./scripts/build-plugin.sh
+          ./scripts/build-plugin.sh
