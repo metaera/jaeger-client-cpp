@@ -18,24 +18,24 @@ jobs:
     
     steps:
 
-    - name: Set up cache
-      uses: actions/cache@v2
-      with:
-        path: ~\.hunter
-        key: ${{ runner.os }}-hunter-${{ hashFiles('**/') }}
-        restore-keys: |
-          ${{ runner.os }}-hunter-
+      - name: Set up cache
+        uses: actions/cache@v2
+        with:
+          path: ~\.hunter
+          key: ${{ runner.os }}-hunter-${{ hashFiles('**/') }}
+          restore-keys: |
+            ${{ runner.os }}-hunter-
 
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Configure
-      run: cmake -Bbuild
+      - name: Configure
+        run: cmake -Bbuild
 
-    - name: Build
-      run: cmake --build build -j4
+      - name: Build
+        run: cmake --build build -j4
 
-    - name: Test
-      run: |
-        cd build
-        ctest -V --timeout 600
+      - name: Test
+        run: |
+          cd build
+          ctest -V --timeout 600
