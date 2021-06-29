@@ -18,7 +18,7 @@ function main() {
     local: *;
 };
 EOF
-
+    CXXFLAGS="-Wno-error=deprecated-copy"
     cmake -DCMAKE_BUILD_TYPE=Release \
         -DJAEGERTRACING_PLUGIN=ON \
         -DBUILD_TESTING=ON \
