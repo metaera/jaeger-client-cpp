@@ -13,7 +13,8 @@ env:
 
 jobs:
   build:
-
+    if: "!contains(github.event.head_commit.message, 'skip ci') || !contains(github.event.head_commit.message, 'ci osx') || !contains(github.event.head_commit.message, 'ci win')"
+    
     runs-on: ubuntu-latest
     
     steps:
@@ -40,7 +41,32 @@ jobs:
           cd build
           ctest -V --timeout 600
 
-      - name: build plugin
+      - name: Build plugin
         run: |
           chmod +x ./scripts/build-plugin.sh
           ./scripts/build-plugin.sh
+
+      - name: create release ${{ github.ref }}
+        if: github.ref == 'refs/heads/master'
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: upload release asset - libjaegertracing_plugin.so
+        if: github.ref == 'refs/heads/master'
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ './utest/libjaegertracing_plugin.so' }}
+          asset_name: ${{ 'libjaegertracing_plugin.so' }}
+          asset_content_type: application/zip
+
