@@ -66,7 +66,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ './utest/libjaegertracing_plugin.so' }}
+          asset_path: ${{ '/home/runner/work/jaeger-client-cpp/jaeger-client-cpp/build/utest/libjaegertracing_plugin.so' }}
           asset_name: ${{ 'libjaegertracing_plugin.so' }}
           asset_content_type: application/zip
 
