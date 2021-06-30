@@ -25,8 +25,9 @@ EOF
         -DHUNTER_CONFIGURATION_TYPES=Release \
         ..
     make -j3
-    mv libjaegertracing_plugin.so /libjaegertracing_plugin.so
-    ./DynamicallyLoadTracerTest /libjaegertracing_plugin.so
+    mkdir ./utest
+    mv libjaegertracing_plugin.so ./utest/libjaegertracing_plugin.so
+    ./DynamicallyLoadTracerTest ./utest/libjaegertracing_plugin.so
 }
 
 main
