@@ -51,12 +51,27 @@ jobs:
           chmod +x ./scripts/build-plugin.sh
           ./scripts/build-plugin.sh
 
-      - name: Release Plug-in
-        uses: sondreb/action-release@master
+      - name: create release ${{ env.GIT_TAG }}
+        if: github.ref == 'refs/heads/master'
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: "/home/runner/work/jaeger-client-cpp/jaeger-client-cpp/build/utest/libjaegertracing_plugin.so"
+          tag_name: ${{ env.GIT_TAG }}
+          release_name: ${{ format('{0} - {1}', env.GIT_TAG, 'Plugin Release') }}
+          body: ${{ github.ref }}
           draft: false
           prerelease: false
-          name: ${{ format('{0} - {1}', env.GIT_TAG, 'Plugin Release') }}
-          tag: ${{ env.GIT_TAG }}
+
+      - name: upload release asset - libjaegertracing_plugin.so
+        if: github.ref == 'refs/heads/master'
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ '/home/runner/work/jaeger-client-cpp/jaeger-client-cpp/build/utest/libjaegertracing_plugin.so' }}
+          asset_name: ${{ 'libjaegertracing_plugin.so' }}
+          asset_content_type: application/zip
+
